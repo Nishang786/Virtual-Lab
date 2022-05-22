@@ -309,3 +309,6 @@ let Total_marks = 0;
      let totalQueCounTag = '<span><p>'+ index +'</p> of <p>'+ (questions_A.length +questions_B.length) + '</p> questions</span>';
      bottom_ques_counter.innerHTML = totalQueCounTag;  //adding new span tag inside bottom_ques_counter
  }
+
+
+ // checking
