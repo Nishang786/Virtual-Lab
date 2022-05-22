@@ -116,14 +116,19 @@ function showQuestions_A(index){
 
     //creating a new span and div tag for question and option and passing the value using array index
     let queA_tag = '<span>'+ questions_A[index].numb + ". " + questions_A[index].question +'</span>';
-    let option_tag = '<div class="option" id = "0"><span><img src = "' + questions_A[index].options[0]+'"></span></div>'
+    let option_tag = '<div class = "table">'
+    +'<div class = "row">' 
+    +'<div class="option" id = "0"><span><img src = "' + questions_A[index].options[0]+'"></span></div>'
     + '<div class="option" id = "1"><span><img src = "' + questions_A[index].options[1]+'"></span></div>'
+    +'</div>'
+    +'<div class = "row">'
     + '<div class="option" id = "2"><span><img src = "' + questions_A[index].options[2]+'"></span></div>'
-    + '<div class="option" id = "3"><span><img src = "' + questions_A[index].options[3]+'"></span></div>';
+    + '<div class="option" id = "3"><span><img src = "' + questions_A[index].options[3]+'"></span></div>'
+    +'</div>'
+    +'</div>';
     queA_text.innerHTML = queA_tag; //adding new span tag inside que_tag
 
-    console.log(queA_tag)
-    console.log(option_tag)
+  
     
     option_list.innerHTML = option_tag; //adding new div tag inside option_tag
    
@@ -139,35 +144,67 @@ let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
 let crossIconTag = '<div class="icon cross"><i class="fas fa-times"></i></div>';
 
 //if user clicked on option
+var ans_array = []
 function optionSelected(answer){
     var items = document.querySelectorAll(".option");
-      items.forEach(function (item) {
-       item.className = item.className.replace("selected"," ");
-      });
-
-//  clearInterval(counter); //clear counter
+    //   items.forEach(function (item) {
+    //    //item.className = item.className.replace("selected"," ");
+    //    console.log(item.className)
+    //    if(item.className == "selected"){
+    //     item.className = item.className.replace("selected"," "); 
+    //    }
+    //   });
+    console.log()
+    
+    if(answer.className === "option selected"){
+        console.log(ans_array.includes(parseInt(answer.id)))
+        answer.className = answer.className.replace("selected"," ");
+        if(ans_array.includes(parseInt(answer.id)) == true){
+            var value = parseInt(answer.id)
+            var index = ans_array.indexOf(value);
+            ans_array.splice(index, 1);
+        }
+        
+    }
+    else{
+      answer.classList.add("selected");
+      console.log(ans_array.includes(answer.id))
+      if(ans_array.includes(parseInt(answer.id)) === false){
+          console.log(answer.id)
+          ans_array.push(parseInt(answer.id))
+      }
+    }
+   
+      //  clearInterval(counter); //clear counter
 //    clearInterval(counterLine); //clear counterLine
-    let userAns = answer.id; //getting user selected option
-    console.log(answer.id)
+    let userAns = ans_array.sort() //getting user selected option
+    //console.log(answer.id)
+    console.log(userAns)
     let correcAns = questions_A[queA_count].answer; //getting correct answer from array
+    console.log(correcAns)
     const allOptions = option_list.children.length; //getting all option items
-
-    answer.classList.add("selected");
+    console.log(allOptions)
     
     //next_btn.classList.add("show"); //show the next button if user selected any option
     check.classList.add("show")
 check.onclick =  () => {   
     
-    if(userAns == correcAns){ //if user selected option is equal to array's correct answer
+    if(true){ //if user selected option is equal to array's correct answer
         userScore += questions_A[queA_count].marks; //upgrading score value with 1
-        answer.classList.add("correct"); //adding green color to correct selected option
-        answer.insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to correct selected option
+        for(i = 0;i<correcAns.length;i++){
+        var ans_temp = document.getElementById(correcAns[i])
+        ans_temp.classList.add("correct")
+        //answer.classList.add("correct"); //adding green color to correct selected option
+        }
+       // answer.insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to correct selected option
         console.log("Correct Answer");
         console.log("Your correct answers = " + userScore);
     }
     else{
+        console.log('else executed')
+        
         answer.classList.add("incorrect"); //adding red color to correct selected option
-        answer.insertAdjacentHTML("beforeend", crossIconTag); //adding cross icon to correct selected option
+       // answer.insertAdjacentHTML("beforeend", crossIconTag); //adding cross icon to correct selected option
         console.log("Wrong Answer");
 
         for(i=0; i < allOptions; i++){
@@ -242,7 +279,7 @@ let Total_marks = 0;
             Total_marks += questions_B[i].marks 
             }
             
-        console.log(Total_marks)
+        console.log('Total Marks - ',Total_marks)
 
     info_box.classList.remove("activeInfo"); //hide info box
     quiz_box.classList.remove("activeQuiz"); //hide quiz box

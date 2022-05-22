@@ -4,7 +4,7 @@ let questions_A = [
     numb: 1,
     marks: 3,
     question: "What does HTML stand for?",
-    answer:1,
+    answer:[1,2],
     options: [
       "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/Screenshot 2022-04-30 180602.png",
       "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/Screenshot 2022-04-30 180545.png",
