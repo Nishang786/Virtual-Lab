@@ -1,15 +1,21 @@
 // creating an array and passing the number, questions, options, and answers
 let questions_A = [
     {
+    type: 'A',  
     numb: 1,
     marks: 3,
     question: "What does HTML stand for?",
     answer:[1,2],
     options: [
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/Screenshot 2022-04-30 180602.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/Screenshot 2022-04-30 180545.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/Screenshot 2022-04-30 180521.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/Screenshot 2022-04-30 180501.png"
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/1.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/2.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/3.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/4.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/5.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/6.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/7.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/8.png",
+      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/9.png"
     ]
   }
   // you can uncomment the below codes and make duplicate as more as you want to add question
