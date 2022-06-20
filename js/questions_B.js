@@ -1,5 +1,9 @@
 let questions_B = [
     {
+    type: 'B',
+    Question:"Enter the number of units required ",
+    SubQuestions: [
+    {
         numb : 1,
         marks: 3,
         question: "Shaft",
@@ -17,5 +21,6 @@ let questions_B = [
         marks : 3,
         question:'Sleeve',
         answer : '1'
-    }
+    }]
+}
 ]

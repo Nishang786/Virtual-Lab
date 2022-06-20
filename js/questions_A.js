@@ -4,7 +4,7 @@ let questions_A = [
     type: 'A',  
     numb: 1,
     marks: 3,
-    question: "What does HTML stand for?",
+    question: " Select components for Sleeve Coupling",
     answer:[1,2],
     options: [
       "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/1.png",
