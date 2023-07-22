@@ -320,6 +320,11 @@ function optionSelected_multiple(answer) {
 //=============================================================================================================
 
 function showQuestions_B(index) {
+attempt = 1
+inc_marks = 0  
+for(i = 0;i<3;i++){
+inc_marks += questions_B[0].SubQuestions[i].numb
+}
   console.log(questions_B[0].SubQuestions[1].question)
   next_btn.classList.remove("show");
   if (document.getElementById("queA") != null) {
@@ -379,7 +384,7 @@ function text_ans(){
      console.log("correct ans - ",text_ans_array);
  
       if ((text_user_array.toString() == text_ans_array.toString()) == true) {
-        userScore += totalmarkB ;
+        userScore += inc_marks ;
         console.log("Correct Answer");
         for(i=0;i< 3;i++){
           var id = 'answer'+i;
@@ -389,7 +394,13 @@ function text_ans(){
         text_user_array = []
              text_ans_array = []
       }
+      else if(attempt>3){
+        next_btn.classList.add("show");
+        
+      }
       else{
+        inc_marks -= 1
+        attempt++;
           Try_again.classList.add('show')
           for(i=0;i< 3;i++){
             var id = 'answer'+i;
