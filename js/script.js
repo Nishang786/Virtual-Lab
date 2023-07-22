@@ -1,4 +1,3 @@
-
 //selecting all required elements
 const start_btn = document.querySelector(".start_btn button");
 const info_box = document.querySelector(".info_box");
@@ -11,7 +10,21 @@ const time_line = document.querySelector("header .time_line");
 const timeText = document.querySelector(".timer .time_left_txt");
 const timeCount = document.querySelector(".timer .timer_sec");
 const tryagain_btn = document.querySelector(".tryagain.btn");
-console.log(questions_B.length);
+
+// Initiating Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDk2qbFh8R9OKDbI97tjFO5gGjagy9zHZQ",
+  authDomain: "vlabs-ec1c6.firebaseapp.com",
+  databaseURL: "https://vlabs-ec1c6-default-rtdb.firebaseio.com",
+  projectId: "vlabs-ec1c6",
+  storageBucket: "vlabs-ec1c6.appspot.com",
+  messagingSenderId: "812057089772",
+  appId: "1:812057089772:web:73aaf1032c2fb21dc2f7c9",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+
 // if startQuiz button clicked
 start_btn.onclick = () => {
   info_box.classList.add("activeInfo"); //show info box
@@ -28,7 +41,7 @@ continue_btn.onclick = () => {
   quiz_box.classList.add("activeQuiz"); //show quiz box
   showQuestions_A(0); //calling showQestions function
   queCounter(que_numb);
-  que_numb++;
+  que_numb++; 
     
   //   queCounter(1); //passing 1 parameter to queCounter
   //    startTimer(30); //calling startTimer function
@@ -89,7 +102,7 @@ next_btn.onclick = () => {
     ; //increment the que_numb value
     showQuestions_A(queA_count,ques); //calling showQestions function
     queCounter(que_numb); //passing que_numb value to queCounter
-    que_numb++
+    que_numb++;
     //  clearInterval(counter); //clear counter
     // clearInterval(counterLine); //clear counterLine
     //  startTimer(timeValue); //calling startTimer function
@@ -101,7 +114,8 @@ next_btn.onclick = () => {
     queCounter(que_numb);
     que_numb++
     console.log("Que - 2");
-    showQuestions_B(queB_count);
+    questions = questions_B;
+    showQuestions_B(queB_count,questions);
     queB_count++;
    // else if()
   } else if (queC_count < 1){
@@ -118,7 +132,8 @@ next_btn.onclick = () => {
     queCounter(que_numb)
     que_numb++
     console.log('Que - 4')
-    showQuestions_D(queD_count)
+    questions = questions_D;
+    showQuestions_B(queD_count,questions)
     queD_count++
   }
   else{
@@ -132,11 +147,20 @@ next_btn.onclick = () => {
 
 function showQuestions_A(index) {
 
-  // document.getElementById('que').innerHTML +=
-  //           "<div class='queA_text'> </div>";
-  // document.getElementById('que').innerHTML +=
-  //           "<div class='option_list'>  </div>";
-  // console.log(document.getElementById("que"))
+//Data from Firebase
+db.collection("questions")
+.where("qNo", "==", 1)
+.get()
+.then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    globalThis.answer = doc.data().answer;
+    var marks = doc.data().maxMarks;
+    var maxMarks = doc.data().maxMarks;
+    var question = doc.data().quesTxt;
+    var options = doc.data().options;
+    console.log(answer)
+
+  
 
   const queA_text = document.querySelector(".queA_text");
 
@@ -145,7 +169,7 @@ function showQuestions_A(index) {
     "<span>" +
     'A' +
     ". " +
-    questions_A[index].question +
+    question +
     "</span>";
   queA_text.innerHTML = queA_tag; //adding new span tag inside que_tag
   document.getElementById("queA_text1").innerHTML +=
@@ -158,12 +182,13 @@ function showQuestions_A(index) {
         '<div class="option" id = "' +
         opt_id +
         '"><img src = "' +
-        questions_A[index].options[opt_id] +
-        '"></div>';
+        options[opt_id] +
+        '" alt="Image" height="100" width="100"></div>';
       opt_id++;
     }
     document.getElementById("Table").innerHTML += "</div>";
   }
+
   document.getElementById("queA_text1").innerHTML += "</div></div>";
   // +'<div class = "row">'
   // +'<div class="option" id = "0"><span><img src = "' + questions_A[index].options[0]+'"></span></div>'
@@ -182,8 +207,9 @@ function showQuestions_A(index) {
   // set onclick attribute to all available options
   
   for (i = 0; i < option.length; i++) {
-    option[i].setAttribute("onclick", "optionSelected_multiple(this)");
+    option[i].setAttribute("onclick", "optionSelected_multiple(this,0)");
   }
+})})
 }
 // creating the new div tags which for icons
 //let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
@@ -195,10 +221,10 @@ function showQuestions_A(index) {
 inc_marks = questions_A[queA_count].marks;
 var attempt = 1
 var ans_array = [];
-function optionSelected_multiple(answer) {
+function optionSelected_multiple(answer,call_id) {
 
-  
-
+  console.log(call_id)
+  if (call_id == 1){ans_array = [];}
     Try_again.classList.remove("show");
   var items = document.querySelectorAll(".option");
   //   items.forEach(function (item) {
@@ -208,7 +234,6 @@ function optionSelected_multiple(answer) {
   //     item.className = item.className.replace("selected"," ");
   //    }
   //   });
-  console.log();
 
   if (answer.className === "option selected") {
     console.log(ans_array.includes(parseInt(answer.id)));
@@ -226,7 +251,7 @@ function optionSelected_multiple(answer) {
       ans_array.push(parseInt(answer.id));
     }
   }
-
+  console.log(answer)
   //  clearInterval(counter); //clear counter
   //    clearInterval(counterLine); //clear counterLine
   let userAns = ans_array.sort(); //getting user selected option
@@ -296,9 +321,21 @@ function optionSelected_multiple(answer) {
             item.className = item.className.replace("selected"," ");
            
           });
+          for (i = 0; i < 9; i++) {
+            // console.log(questions_A.options.length)
+            var dis = document.getElementById(i);
+            dis.classList.add("disabled");
+            // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+          }
       Try_again.classList.add("show");
       Try_again.onclick = () => {
-        optionSelected_multiple(answer);
+        for (i = 0; i < 9; i++) {
+          // console.log(questions_A.options.length)
+          var dis = document.getElementById(i);
+          dis.classList.remove("disabled");
+          // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+        }
+        optionSelected_multiple(answer,1);
       };
 
       //answer.classList.add("incorrect"); //adding red color to correct selected option
@@ -319,13 +356,22 @@ function optionSelected_multiple(answer) {
 
 //=============================================================================================================
 
-function showQuestions_B(index) {
+function showQuestions_B(index,questions) {
 attempt = 1
-inc_marks = 0  
-for(i = 0;i<3;i++){
-inc_marks += questions_B[0].SubQuestions[i].numb
-}
-  console.log(questions_B[0].SubQuestions[1].question)
+inc_marks = 0 
+db.collection("questions")
+.where("qNo", "==", 2)
+.get()
+.then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    globalThis.answer = doc.data().answer;
+    var marks = doc.data().maxMarks;
+    var maxMarks = doc.data().maxMarks;
+    var question = doc.data().quesTxt;
+    var subTxt = doc.data().subTxt;
+  
+   
+  
   next_btn.classList.remove("show");
   if (document.getElementById("queA") != null) {
     var queA_section = document.getElementById("queA_text1");
@@ -339,33 +385,44 @@ inc_marks += questions_B[0].SubQuestions[i].numb
 
   const queB_text = document.getElementById("queA_text1");
   //creating a new span and div tag for question and option and passing the value using array index
-   let queB_tag = '<span>'+ 'B. '+ questions_B[0].Question +'</span>';
+   let queB_tag = '<span>'+ 'B. '+ question +'</span>';
   // console.log('QB - ',queB_tag)
    queB_text.innerHTML = queB_tag; //adding new span tag inside que_tag
-  for (i = 0; i <= questions_B[0].SubQuestions.length - 1; i++) {
+  for (i = 0; i <= questions[0].SubQuestions.length - 1; i++) {
     document.getElementById("queA_text1").innerHTML +=
       "<div>" +
       "<span>" +
-      questions_B[0].SubQuestions[i].numb +
+      (i+1) +
       ". " +
-      questions_B[0].SubQuestions[i].question +
+      subTxt[i] +
       "</span>" +
       '<label for = "answer"></label>' +
       "<input class = 'inputs' id = " +
       "answer" +
       i +
       ' name="answer" type = "text" >' +
+      "</div>"+
+      "<div class='column' id= "+
+      "answer"+
+      i+ 
       "</div>";
       
+     
   }
+
+})})
   text_ans()
 }
+
 var text_user_array = []
 var text_ans_array = []
 var totalmarkB = 9
+
 function text_ans(){  
-  check.classList.add("show");
+
+  
   Try_again.classList.remove('show')
+  check.classList.add("show");
   check.onclick = () => {
     check.classList.remove("show");
     for (i = 0; i <= 3 - 1; i++) {
@@ -373,10 +430,21 @@ function text_ans(){
       var ans = document.getElementById(ID)
 
       text_user_array.push(parseInt(ans.value))
-      text_ans_array.push(parseInt(questions_B[0].SubQuestions[i].answer))
+     // text_ans_array.push(parseInt(questions[0].SubQuestions[i].answer))
       
     }
-    console.log('total marks b - ',totalmarkB)
+db.collection("questions")
+.where("qNo", "==", 2)
+.get()
+.then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    var text_ans_array1 = doc.data().answer;
+    text_ans_array = text_ans_array1;
+    
+  
+    })})
+   
+    console.log(text_ans_array)
 
     //  text_user_array = text_user_array.sort()
     //  text_ans_array = text_ans_array.sort()
@@ -392,9 +460,14 @@ function text_ans(){
         }
         next_btn.classList.add("show");
         text_user_array = []
-             text_ans_array = []
+        text_ans_array = []
       }
       else if(attempt>3){
+        for(i=0;i< 3;i++){
+          var id = 'answer'+i;
+          document.getElementById(id).value = text_ans_array[i]
+          document.getElementById(id).disabled = true
+        }
         next_btn.classList.add("show");
         
       }
@@ -403,13 +476,12 @@ function text_ans(){
         attempt++;
           Try_again.classList.add('show')
           for(i=0;i< 3;i++){
-            var id = 'answer'+i;
+            var id = 'answer'+i; 
             document.getElementById(id).disabled = true;
           }
           Try_again.onclick = () => {
             for(i=0;i< 3;i++){
-              var id = 'answer'+i;
-              document.getElementById(id).value = ''
+              var id = 'answer'+i;  
               document.getElementById(id).disabled = false
             }
 
@@ -421,6 +493,7 @@ function text_ans(){
 
          
       }
+      
     
     check.classList.remove("show");
     //next_btn.classList.add("show");
@@ -429,7 +502,7 @@ function text_ans(){
 
 //================================================================================================================
 function showQuestions_C(index) {
-
+attempt = 1;
   next_btn.classList.remove("show");
   if (document.getElementById("queA") != null) {
     var queA_section = document.getElementById("queA_text1");
@@ -529,7 +602,7 @@ console.log(allOptions);
 //next_btn.classList.add("show"); //show the next button if user selected any option
 check.classList.add("show");
 check.onclick = () => {
-  if ((userAns == correcAns) == true) {
+  if ((userAns == correcAns) == true && attempt<3) {
     check.classList.remove("show");
     //if user selected option is equal to array's correct answer
     next_btn.classList.add("show");
@@ -543,17 +616,54 @@ check.onclick = () => {
     console.log("Correct Answer");
     console.log("Your correct answers = " + userScore);
     
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i <=3; i++) {
       // console.log(questions_A.options.length)
       var dis = document.getElementById(i);
       dis.classList.add("disabled");
       // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
     }
-  } else {
+  }
+  else if(attempt == 3){
+    var items = document.querySelectorAll(".option");
+      items.forEach(function (item) {
+      
+            item.className = item.className.replace("selected"," ");
+           
+          });
+    
+        var ans_temp = document.getElementById(correcAns);
+        ans_temp.classList.add("correct");
+      
+        //answer.classList.add("correct"); //adding green color to correct selected option
+        for (i = 0; i < 4; i++) {
+          // console.log(questions_A.options.length)
+          var dis = document.getElementById(i);
+          dis.classList.add("disabled");
+          // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+        }
+       
+      
+      next_btn.classList.add("show");
+     
+  }
+   else {
+    attempt++;
     console.log("else executed");
     check.classList.remove("show");
+    for (i = 0; i < 4; i++) {
+      // console.log(questions_A.options.length)
+      var dis = document.getElementById(i);
+      dis.classList.add("disabled");
+      // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+    }
     Try_again.classList.add("show");
     Try_again.onclick = () => {
+      for (i = 0; i < 4; i++) {
+        // console.log(questions_A.options.length)
+        var dis = document.getElementById(i);
+        dis.classList.remove("disabled");
+        // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+      }
       optionSelected_single(answer);
     };
 
@@ -568,104 +678,105 @@ check.onclick = () => {
     //     }
   }
   //console.log(questions_A[index].options.length)
+  check.classList.remove("show");
 
   
 };
 }
-//================================================================================================================
-function showQuestions_D(index) {
-  next_btn.classList.remove("show");
-  if (document.getElementById("queA") != null) {
-    var queA_section = document.getElementById("queA_text1");
+// //================================================================================================================
+// function showQuestions_D(index) {
+//   next_btn.classList.remove("show");
+//   if (document.getElementById("queA") != null) {
+//     var queA_section = document.getElementById("queA_text1");
     
-    queA_section.remove(queA_section.selectedIndex);
+//     queA_section.remove(queA_section.selectedIndex);
     
-  }
-  document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"
-  +"</div>" 
-  const queD_text = document.getElementById("queA_text1");
-  //creating a new span and div tag for question and option and passing the value using array index
-   let queD_tag = '<span>'+ 'D' + ". " + questions_D[index].Question +'</span>';
-  // console.log('QB - ',queB_tag)
-  queD_text.innerHTML = queD_tag; //adding new span tag inside que_tag
-  document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"+
-  "</div>" 
-  for (i = 0; i <= questions_D[0].SubQuestions.length - 1; i++) {
-    document.getElementById("queA_text1").innerHTML +=
-      "<div>" +
-      "<span>" +
-      questions_D[0].SubQuestions[i].numb +
-      ". " +
-      questions_D[0].SubQuestions[i].question +
-      "</span>" +
-      '<label for = "answer"></label>' +
-      "<input class = 'inputs' id = " +
-      "answer" +
-      i +
-      ' name="answer" type = "text" >' +
-      "</div>";
+//   }
+//   document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"
+//   +"</div>" 
+//   const queD_text = document.getElementById("queA_text1");
+//   //creating a new span and div tag for question and option and passing the value using array index
+//    let queD_tag = '<span>'+ 'D' + ". " + questions_D[index].Question +'</span>';
+//   // console.log('QB - ',queB_tag)
+//   queD_text.innerHTML = queD_tag; //adding new span tag inside que_tag
+//   document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"+
+//   "</div>" 
+//   for (i = 0; i <= questions_D[0].SubQuestions.length - 1; i++) {
+//     document.getElementById("queA_text1").innerHTML +=
+//       "<div>" +
+//       "<span>" +
+//       questions_D[0].SubQuestions[i].numb +
+//       ". " +
+//       questions_D[0].SubQuestions[i].question +
+//       "</span>" +
+//       '<label for = "answer"></label>' +
+//       "<input class = 'inputs' id = " +
+//       "answer" +
+//       i +
+//       ' name="answer" type = "text" >' +
+//       "</div>";
       
-  }
-  text1_ans()
-}
-var text_user_array = []
-var text_ans_array = []
-var totalmarkB = 9
-function text1_ans(){  
-  check.classList.add("show");
-  Try_again.classList.remove('show')
-  check.onclick = () => {
-    check.classList.remove("show");
-    for (i = 0; i <= 3 - 1; i++) {
-      var ID = "answer" + i;
-      var ans = document.getElementById(ID)
+//   }
+//   text1_ans()
+// }
+// var text_user_array = []
+// var text_ans_array = []
+// var totalmarkB = 9
+// function text1_ans(){  
+//   check.classList.add("show");
+//   Try_again.classList.remove('show')
+//   check.onclick = () => {
+//     check.classList.remove("show");
+//     for (i = 0; i <= 3 - 1; i++) {
+//       var ID = "answer" + i;
+//       var ans = document.getElementById(ID)
 
-      text_user_array.push(parseInt(ans.value))
-      text_ans_array.push(parseInt(questions_D[0].SubQuestions[i].answer))
+//       text_user_array.push(parseInt(ans.value))
+//       text_ans_array.push(parseInt(questions_D[0].SubQuestions[i].answer))
       
-    }
-    console.log('total marks b - ',totalmarkB)
+//     }
+//     console.log('total marks b - ',totalmarkB)
 
-     text_user_array = text_user_array
-     text_ans_array = text_ans_array
-     console.log("user ans - ",text_user_array);
-     console.log("correct ans - ",text_ans_array);
+//      text_user_array = text_user_array
+//      text_ans_array = text_ans_array
+//      console.log("user ans - ",text_user_array);
+//      console.log("correct ans - ",text_ans_array);
  
-      if ((text_user_array.toString() == text_ans_array.toString()) == true) {
-        userScore += totalmarkB ;
-        console.log("Correct Answer");
-        next_btn.classList.add("show");
-        for(i=0;i< questions_D[0].SubQuestions.length;i++){
-          var id = 'answer'+i;
-          document.getElementById(id).disabled = true;
-        }
-      }
-      else{
-          Try_again.classList.add('show')
-          for(i=0;i< questions_D[0].SubQuestions.length;i++){
-            var id = 'answer'+i;
-            document.getElementById(id).disabled = true;
-          }
-          Try_again.onclick = () => {
-            for(i=0;i< questions_D[0].SubQuestions.length;i++){
-              var id = 'answer'+i;
-              document.getElementById(id).value = ''
-              document.getElementById(id).disabled = false
-            }
+//       if ((text_user_array.toString() == text_ans_array.toString()) == true) {
+//         userScore += totalmarkB ;
+//         console.log("Correct Answer");
+//         next_btn.classList.add("show");
+//         for(i=0;i< questions_D[0].SubQuestions.length;i++){
+//           var id = 'answer'+i;
+//           document.getElementById(id).disabled = true;
+//         }
+//       }
+//       else{
+//           Try_again.classList.add('show')
+//           for(i=0;i< questions_D[0].SubQuestions.length;i++){
+//             var id = 'answer'+i;
+//             document.getElementById(id).disabled = true;
+//           }
+//           Try_again.onclick = () => {
+//             for(i=0;i< questions_D[0].SubQuestions.length;i++){
+//               var id = 'answer'+i;
+//               document.getElementById(id).value = ''
+//               document.getElementById(id).disabled = false
+//             }
 
           
-             text_user_array = []
-             text_ans_array = []
-              text1_ans()
-          }
+//              text_user_array = []
+//              text_ans_array = []
+//               text1_ans()
+//           }
 
          
-      }
+//       }
     
-    check.classList.remove("show");
-    //next_btn.classList.add("show");
-  };
-}
+//     check.classList.remove("show");
+//     //next_btn.classList.add("show");
+//   };
+// }
 
 //================================================================================================================
 function showResult() {
@@ -673,8 +784,8 @@ function showResult() {
   // for (i = 0; i < questions_A.length; i++) {
   //   Total_marks += questions_A[i].marks;
   // }
-  // for (i = 0; i < questions_B.length; i++) {
-  //   Total_marks += questions_B[i].marks;
+  // for (i = 0; i < questions.length; i++) {
+  //   Total_marks += questions[i].marks;
   // }
 
   console.log("Total Marks - ", Total_marks);
@@ -683,7 +794,7 @@ function showResult() {
   quiz_box.classList.remove("activeQuiz"); //hide quiz box
   result_box.classList.add("activeResult"); //show result box
   const scoreText = result_box.querySelector(".score_text");
-  if (userScore > 3) {
+  if (userScore > 20) {
     // if user scored more than 3
     //creating a new span tag and passing the user score number and total question number
     let scoreTag =
@@ -693,7 +804,7 @@ function showResult() {
       Total_marks +
       "</p></span>";
     scoreText.innerHTML = scoreTag; //adding new span tag inside score_Text
-  } else if (userScore > 1) {
+  } else if (userScore > 15) {
     // if user scored more than 1
     let scoreTag =
       "<span>and nice 😎, You got <p>" +

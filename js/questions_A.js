@@ -7,15 +7,15 @@ let questions_A = [
     question: " Select components for Sleeve Coupling",
     answer:[1,2],
     options: [
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/1.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/2.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/3.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/4.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/5.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/6.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/7.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/8.png",
-      "C:/Users/hp/OneDrive/Desktop/AJ_Projects/Quiz Application with Timer/assets/9.png"
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/1.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/2.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/3.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/4.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/5.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/6.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/7.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/8.png",
+      "C:/Users/hp/AJ_Projects/Quiz Application with Timer/assets/9.png"
     ]
   }
   // you can uncomment the below codes and make duplicate as more as you want to add question
