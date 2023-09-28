@@ -39,16 +39,15 @@ exit_btn.onclick = () => {
 continue_btn.onclick = () => {
   info_box.classList.remove("activeInfo"); //hide info box
   quiz_box.classList.add("activeQuiz"); //show quiz box
-  showQuestions_A(0); //calling showQestions function
+  
   queCounter(que_numb);
   que_numb++; 
     
-  //   queCounter(1); //passing 1 parameter to queCounter
-  //    startTimer(30); //calling startTimer function
-  //   startTimerLine(0); //calling startTimerLine function
+
 };
 
 let timeValue = 30;
+let pretestcnt = 0;
 let queA_count = 0;
 let queB_count = 0;
 let queC_count = 0
@@ -60,31 +59,9 @@ let counterLine;
 let widthValue = 0;
 let que2_count = 0;
 
-//const restart_quiz = result_box.querySelector(".buttons .restart");
+
 const quit_quiz = result_box.querySelector(".buttons .quit");
 
-// // if restartQuiz button clicked
-// restart_quiz.onclick = ()=>{
-//     quiz_box.classList.add("activeQuiz"); //show quiz box
-//     result_box.classList.remove("activeResult"); //hide result box
-//     timeValue = 30;
-//     queA_count = 0;
-//     que_numb = 1;
-//     userScore = 0;
-//     widthValue = 0;
-//     que2_count = 0;
-//     showQuestions_A(queA_count); //calling showQestions function
-//     //queCounter(que_numb); //passing que_numb value to queCounter
-//     clearInterval(counter); //clear counter
-//     clearInterval(counterLine); //clear counterLine
-//    // startTimer(timeValue); //calling startTimer function
-//    // startTimerLine(widthValue); //calling startTimerLine function
-//     timeText.textContent = "Time Left"; //change the text of timeText to Time Left
-//     next_btn.classList.remove("show"); //hide the next button
-//     check.classList.remove("show")
-// }
-
-// if quitQuiz button clicked
 quit_quiz.onclick = () => {
   window.location.reload(); //reload the current window
 };
@@ -96,11 +73,52 @@ const Try_again = document.querySelector("footer .Try_again");
 
 // if Next Que button clicked
 next_btn.onclick = () => {
-  if (queA_count < questions_A.length - 1) {
+  
+    
+  
+if (pretestcnt > 4){
+    
+pretestcnt++
+for(i=1;i<=3;i++) {
+
+db.collection("pretest")
+.where("qNo", "==", i)
+.get()
+.then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+
+    var question = doc.data().quesTxt;
+    var options = doc.data().Options;
+
+   showQuestions_C(question,options) 
+
+    
+    
+  })})
+  }
+
+  }
+  else if (queA_count == 0) {
     //if question count is less than total question length
     queA_count++; //increment the queA_count value
-    ; //increment the que_numb value
-    showQuestions_A(queA_count,ques); //calling showQestions function
+    //increment the que_numb value
+db.collection("questions")
+.where("qNo", "==", 1)
+.get()
+.then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    globalThis.answer = doc.data().answer;
+    var marks = doc.data().maxMarks;
+    var maxMarks = doc.data().maxMarks;
+    var question = doc.data().quesTxt;
+    var options = doc.data().options;
+    correcAns = []
+    var correcAns = doc.data().answer;
+    console.log(answer)
+  
+    showQuestions_A(question,options,correcAns); //calling showQestions function
+  })})
+    
     queCounter(que_numb); //passing que_numb value to queCounter
     que_numb++;
     //  clearInterval(counter); //clear counter
@@ -109,7 +127,8 @@ next_btn.onclick = () => {
     //  startTimerLine(widthValue); //calling startTimerLine function
     //  timeText.textContent = "Time Left"; //change the timeText to Time Left
     next_btn.classList.remove("show"); //hide the next button
-  } else if (queB_count < 1) {
+  }
+  else if (queB_count < 1) {
     
     queCounter(que_numb);
     que_numb++
@@ -140,25 +159,15 @@ next_btn.onclick = () => {
     showResult(); //calling showResult function
   }
 };
-
+next_btn.classList.add('show')
 //========================================================================================
 
 // getting questions_A and options from array
 
-function showQuestions_A(index) {
+function showQuestions_A(question,options,correcAns) {
 
 //Data from Firebase
-db.collection("questions")
-.where("qNo", "==", 1)
-.get()
-.then((querySnapshot) => {
-  querySnapshot.forEach((doc) => {
-    globalThis.answer = doc.data().answer;
-    var marks = doc.data().maxMarks;
-    var maxMarks = doc.data().maxMarks;
-    var question = doc.data().quesTxt;
-    var options = doc.data().options;
-    console.log(answer)
+
 
   
 
@@ -207,9 +216,9 @@ db.collection("questions")
   // set onclick attribute to all available options
   
   for (i = 0; i < option.length; i++) {
-    option[i].setAttribute("onclick", "optionSelected_multiple(this,0)");
+    option[i].setAttribute("onclick", "optionSelected_multiple(this,0, ["+ correcAns+"])");
   }
-})})
+
 }
 // creating the new div tags which for icons
 //let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
@@ -221,9 +230,9 @@ db.collection("questions")
 inc_marks = questions_A[queA_count].marks;
 var attempt = 1
 var ans_array = [];
-function optionSelected_multiple(answer,call_id) {
+function optionSelected_multiple(answer,call_id,correcAns) {
 
-  console.log(call_id)
+  console.log(correcAns)
   if (call_id == 1){ans_array = [];}
     Try_again.classList.remove("show");
   var items = document.querySelectorAll(".option");
@@ -257,7 +266,7 @@ function optionSelected_multiple(answer,call_id) {
   let userAns = ans_array.sort(); //getting user selected option
   //console.log(answer.id)
   console.log(userAns);
-  let correcAns = questions_A[queA_count].answer; //getting correct answer from array
+  //let correcAns = questions_A[queA_count].answer; //getting correct answer from array
   console.log(correcAns);
   const allOptions = option_list.children.length; //getting all option items
   console.log(allOptions);
@@ -266,7 +275,7 @@ function optionSelected_multiple(answer,call_id) {
   //next_btn.classList.add("show"); //show the next button if user selected any option
   check.classList.add("show");
   check.onclick = () => {
-    if ((userAns.toString() == correcAns.toString()) == true && attempt<3 ) {
+    if ((userAns.toString() == correcAns) == true && attempt<3 ) {
 
       
       //if user selected option is equal to array's correct answer
@@ -335,7 +344,7 @@ function optionSelected_multiple(answer,call_id) {
           dis.classList.remove("disabled");
           // option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
         }
-        optionSelected_multiple(answer,1);
+        optionSelected_multiple(answer,1,correcAns);
       };
 
       //answer.classList.add("incorrect"); //adding red color to correct selected option
@@ -388,7 +397,7 @@ db.collection("questions")
    let queB_tag = '<span>'+ 'B. '+ question +'</span>';
   // console.log('QB - ',queB_tag)
    queB_text.innerHTML = queB_tag; //adding new span tag inside que_tag
-  for (i = 0; i <= questions[0].SubQuestions.length - 1; i++) {
+  for (i = 0; i <= subTxt.length - 1; i++) {
     document.getElementById("queA_text1").innerHTML +=
       "<div>" +
       "<span>" +
@@ -501,7 +510,7 @@ db.collection("questions")
 }
 
 //================================================================================================================
-function showQuestions_C(index) {
+function showQuestions_C(question,options) {
 attempt = 1;
   next_btn.classList.remove("show");
   if (document.getElementById("queA") != null) {
@@ -510,6 +519,8 @@ attempt = 1;
     queA_section.remove(queA_section.selectedIndex);
     console.log(queA_section)  
   }
+  
+  
   // document.getElementById('que').innerHTML +=
   //           "<div class='queA_text'> </div>";
   // document.getElementById('que').innerHTML +=
@@ -524,7 +535,7 @@ attempt = 1;
     "<span>" +
     'C' +
     ". " +
-    questions_C[index].question +
+    question +
     "</span>";
   document.getElementById('queA_text1').innerHTML = queC_tag; //adding new span tag inside que_tag
   document.getElementById("queA_text1").innerHTML +=
@@ -537,7 +548,7 @@ attempt = 1;
         '<div class="option" id = "' +
         opt_id +
         '"><img src = "' +
-        questions_C[index].options[opt_id] +
+        options[opt_id] +
         '"></div>';
       opt_id++;
     }
@@ -559,13 +570,13 @@ attempt = 1;
   const option = document.querySelectorAll(".option");
   
   // set onclick attribute to all available options
-  
   for (i = 0; i < option.length; i++) {
     option[i].setAttribute("onclick", "optionSelected_single(this)");
   }
+
 }
 function optionSelected_single(answer) {
-
+ console.log('optionSelected ran')
   Try_again.classList.remove("show");
   var items = document.querySelectorAll(".option");
   items.forEach(function (item) {
