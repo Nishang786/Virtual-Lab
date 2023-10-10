@@ -108,7 +108,7 @@ body{
 }
 
 .quiz_box{
-    width: 550px;
+    width: auto;
     background: #fff;
     border-radius: 5px;
     transform: translate(-50%, -50%) scale(0.9);
@@ -177,8 +177,8 @@ body{
 }
 
 section{
-    padding: 25px 30px 20px 30px;
-    background: #fff;
+    padding: 40px 60px 40px 60px;
+    background: #ffffff;
 }
 
 section .que_text{

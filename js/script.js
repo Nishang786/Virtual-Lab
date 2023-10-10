@@ -39,7 +39,7 @@ exit_btn.onclick = () => {
 continue_btn.onclick = () => {
   info_box.classList.remove("activeInfo"); //hide info box
   quiz_box.classList.add("activeQuiz"); //show quiz box
-  
+  Paragraph()
   queCounter(que_numb);
   que_numb++; 
     
@@ -47,9 +47,11 @@ continue_btn.onclick = () => {
 };
 
 let timeValue = 30;
-let pretestcnt = 0;
-let queA_count = 0;
-let queB_count = 0;
+let pretestcnt = 1;
+let mcqcnt = 1;
+let fibcnt = 1;// fill in the blanks counter
+let paracnt = 1;
+let vidcnt = 1;
 let queC_count = 0
 let queD_count = 0
 let que_numb = 1;
@@ -73,37 +75,12 @@ const Try_again = document.querySelector("footer .Try_again");
 
 // if Next Que button clicked
 next_btn.onclick = () => {
-  
-    
-  
-if (pretestcnt > 4){
-    
-pretestcnt++
-for(i=1;i<=3;i++) {
 
+ 
+if (pretestcnt <= 6){
+    
 db.collection("pretest")
-.where("qNo", "==", i)
-.get()
-.then((querySnapshot) => {
-  querySnapshot.forEach((doc) => {
-
-    var question = doc.data().quesTxt;
-    var options = doc.data().Options;
-
-   showQuestions_C(question,options) 
-
-    
-    
-  })})
-  }
-
-  }
-  else if (queA_count == 0) {
-    //if question count is less than total question length
-    queA_count++; //increment the queA_count value
-    //increment the que_numb value
-db.collection("questions")
-.where("qNo", "==", 1)
+.where("qNo", "==", pretestcnt)
 .get()
 .then((querySnapshot) => {
   querySnapshot.forEach((doc) => {
@@ -111,67 +88,240 @@ db.collection("questions")
     var marks = doc.data().maxMarks;
     var maxMarks = doc.data().maxMarks;
     var question = doc.data().quesTxt;
-    var options = doc.data().options;
+    var options = doc.data().Options;
     correcAns = []
     var correcAns = doc.data().answer;
     console.log(answer)
   
-    showQuestions_A(question,options,correcAns); //calling showQestions function
+    showQuestions_C(question,options,correcAns,type = 'txt'); //calling showQestions function n type defines the type of options (img or txt)
   })})
-    
-    queCounter(que_numb); //passing que_numb value to queCounter
-    que_numb++;
-    //  clearInterval(counter); //clear counter
-    // clearInterval(counterLine); //clear counterLine
-    //  startTimer(timeValue); //calling startTimer function
-    //  startTimerLine(widthValue); //calling startTimerLine function
-    //  timeText.textContent = "Time Left"; //change the timeText to Time Left
-    next_btn.classList.remove("show"); //hide the next button
-  }
-  else if (queB_count < 1) {
-    
-    queCounter(que_numb);
-    que_numb++
-    console.log("Que - 2");
-    questions = questions_B;
-    showQuestions_B(queB_count,questions);
-    queB_count++;
-   // else if()
-  } else if (queC_count < 1){
+  pretestcnt++  
+}
+
+else if(vidcnt<=1)
+{
+showVideo()
+vidcnt+=1
+}
+else if(mcqcnt<=1)
+{
+  db.collection("questions")
+  .where("qNo", "==", 1)
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      globalThis.answer = doc.data().answer;
+      var marks = doc.data().maxMarks;
+      var maxMarks = doc.data().maxMarks;
+      var question = doc.data().quesTxt;
+      var options = doc.data().options
+      var correcAns = doc.data().answer
   
-    queCounter(que_numb);
-    que_numb++;
-    console.log("Que - 3");
-    showQuestions_C(queC_count);
-    queC_count++;
-    //  clearInterval(counter); //clear counter
-    //  clearInterval(counterLine); //clear counterLine
-  }
-  else if(queD_count<1){
-    queCounter(que_numb)
-    que_numb++
-    console.log('Que - 4')
-    questions = questions_D;
-    showQuestions_B(queD_count,questions)
-    queD_count++
-  }
-  else{
-    showResult(); //calling showResult function
-  }
+      showQuestions_A(question,options,correcAns)
+    })})
+    mcqcnt++
+}
+else if(fibcnt <=1)
+{
+  db.collection("questions")
+.where("qNo", "==", 2)
+.get()
+.then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    globalThis.answer = doc.data().answer;
+    var marks = doc.data().maxMarks;
+    var maxMarks = doc.data().maxMarks;
+    var question = doc.data().quesTxt;
+    var subTxt = doc.data().subTxt;
+    var correcAns = doc.data().answer
+    console.log(correcAns)
+    showQuestions_B(question,subTxt,correcAns)
+  })})
+  fibcnt++
+}
+    
+  
+// if (pretestcnt > 4){
+    
+// pretestcnt++
+// for(i=1;i<=3;i++) {
+
+// db.collection("pretest")
+// .where("qNo", "==", i)
+// .get()
+// .then((querySnapshot) => {
+//   querySnapshot.forEach((doc) => {
+
+//     var question = doc.data().quesTxt;
+//     var options = doc.data().Options;
+
+//    showQuestions_C(question,options) 
+
+    
+    
+//   })})
+//   }
+
+//   }
+//   else if (queA_count == 0) {
+//     //if question count is less than total question length
+//     queA_count++; //increment the queA_count value
+//     //increment the que_numb value
+// db.collection("questions")
+// .where("qNo", "==", 1)
+// .get()
+// .then((querySnapshot) => {
+//   querySnapshot.forEach((doc) => {
+//     globalThis.answer = doc.data().answer;
+//     var marks = doc.data().maxMarks;
+//     var maxMarks = doc.data().maxMarks;
+//     var question = doc.data().quesTxt;
+//     var options = doc.data().options;
+//     correcAns = []
+//     var correcAns = doc.data().answer;
+//     console.log(answer)
+  
+//     showQuestions_A(question,options,correcAns); //calling showQestions function
+//   })})
+    
+//     queCounter(que_numb); //passing que_numb value to queCounter
+//     que_numb++;
+//     //  clearInterval(counter); //clear counter
+//     // clearInterval(counterLine); //clear counterLine
+//     //  startTimer(timeValue); //calling startTimer function
+//     //  startTimerLine(widthValue); //calling startTimerLine function
+//     //  timeText.textContent = "Time Left"; //change the timeText to Time Left
+//     next_btn.classList.remove("show"); //hide the next button
+//   }
+//   else if (queB_count < 1) {
+    
+//     queCounter(que_numb);
+//     que_numb++
+//     console.log("Que - 2");
+//     questions = questions_B;
+//     showQuestions_B(queB_count,questions);
+//     queB_count++;
+//    // else if()
+//   } else if (queC_count < 1){
+  
+//     queCounter(que_numb);
+//     que_numb++;
+//     console.log("Que - 3");
+//     showQuestions_C(queC_count);
+// db.collection("questions")
+// .where("qNo", "==", 3)
+// .get()
+// .then((querySnapshot) => {
+//   querySnapshot.forEach((doc) => {
+//     globalThis.answer = doc.data().answer;
+//     var marks = doc.data().maxMarks;
+//     var maxMarks = doc.data().maxMarks;
+//     var question = doc.data().quesTxt;
+//     var options = doc.data().options;
+//     correcAns = []
+//     var correcAns = doc.data().answer;
+//     console.log(answer)
+  
+//     showQuestions_C(question,options,correcAns,type = null); //calling showQestions function
+//   })})
+//     queC_count++;
+//     //  clearInterval(counter); //clear counter
+//     //  clearInterval(counterLine); //clear counterLine
+//   }
+//   else if(queD_count<1){
+//     queCounter(que_numb)
+//     que_numb++
+//     console.log('Que - 4')
+//     questions = questions_D;
+//     showQuestions_B(queD_count,questions)
+//     queD_count++
+//   }
+//   else{
+//     showResult(); //calling showResult function
+//   }
+
+
 };
 next_btn.classList.add('show')
-//========================================================================================
+//=======================================================================================
 
-// getting questions_A and options from array
+function showVideo()
+{
 
+  db.collection("pretest")
+  .where("vid", "==", 1)
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      var link = doc.data().link;
+    console.log(link)
+  
+
+  
+  if (document.getElementById("queA") != null) {
+    var queA_section = document.getElementById("queA_text1");
+    
+    queA_section.remove(queA_section.selectedIndex);
+    
+  }
+  document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"
+  
+  + "<iframe width='800' height='600' src= " 
+  + "'"
+  +link 
+  +"'"
+   +"title='What is a Coupling? - A Galco TV Tech Tip' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>"
+  +"</div>"
+
+})})
+next_btn.classList.add("show");
+
+}
+//============================================================================================
+
+function Paragraph()
+{
+  db.collection("pretest")
+  .where("p", "==", 1)
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      var paragraph = doc.data().mech;
+
+  
+  if (document.getElementById("queA") != null) {
+    var queA_section = document.getElementById("queA_text1");
+    
+    queA_section.remove(queA_section.selectedIndex);
+    
+  }
+  document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"+
+  "</div>"
+
+  document.getElementById("queA_text1").innerHTML +=  "<div class='theoryTxt'>"
+           + paragraph
+        +"</div>"
+
+        next_btn.classList.add("show");
+
+      })})}
+
+//============================================================================================
 function showQuestions_A(question,options,correcAns) {
 
 //Data from Firebase
+next_btn.classList.remove("show");
 
 
   
-
-  const queA_text = document.querySelector(".queA_text");
+if (document.getElementById("queA") != null) {
+  var queA_section = document.getElementById("queA_text1");
+  
+  queA_section.remove(queA_section.selectedIndex);
+  
+}
+document.getElementById('queA').innerHTML += "<div class = 'Qtext' id = 'queA_text1'>"+
+"</div>"
 
   //creating a new span and div tag for question and option and passing the value using array index
   let queA_tag =
@@ -180,7 +330,7 @@ function showQuestions_A(question,options,correcAns) {
     ". " +
     question +
     "</span>";
-  queA_text.innerHTML = queA_tag; //adding new span tag inside que_tag
+    document.getElementById('queA_text1').innerHTML = queA_tag; //adding new span tag inside que_tag
   document.getElementById("queA_text1").innerHTML +=
     '<div class="option_list"><div class = "table" id = "Table">';
   var opt_id = 0;
@@ -227,16 +377,16 @@ function showQuestions_A(question,options,correcAns) {
 //if user clicked on option
 
 
-inc_marks = questions_A[queA_count].marks;
+inc_marks = 1;
 var attempt = 1
 var ans_array = [];
 function optionSelected_multiple(answer,call_id,correcAns) {
 
-  console.log(correcAns)
+  console.log(answer.id)
   if (call_id == 1){ans_array = [];}
     Try_again.classList.remove("show");
   var items = document.querySelectorAll(".option");
-  //   items.forEach(function (item) {
+  //   items.forEach(function (item) { 
   //    //item.className = item.className.replace("selected"," ");
   //    console.log(item.className)
   //    if(item.className == "selected"){
@@ -245,7 +395,7 @@ function optionSelected_multiple(answer,call_id,correcAns) {
   //   });
 
   if (answer.className === "option selected") {
-    console.log(ans_array.includes(parseInt(answer.id)));
+    //console.log(ans_array.includes(parseInt(answer.id)));
     answer.className = answer.className.replace("selected", " ");
     if (ans_array.includes(parseInt(answer.id)) == true) {
       var value = parseInt(answer.id);
@@ -365,19 +515,10 @@ function optionSelected_multiple(answer,call_id,correcAns) {
 
 //=============================================================================================================
 
-function showQuestions_B(index,questions) {
+function showQuestions_B(question,subTxt,correcAns) {
 attempt = 1
 inc_marks = 0 
-db.collection("questions")
-.where("qNo", "==", 2)
-.get()
-.then((querySnapshot) => {
-  querySnapshot.forEach((doc) => {
-    globalThis.answer = doc.data().answer;
-    var marks = doc.data().maxMarks;
-    var maxMarks = doc.data().maxMarks;
-    var question = doc.data().quesTxt;
-    var subTxt = doc.data().subTxt;
+
   
    
   
@@ -419,15 +560,15 @@ db.collection("questions")
      
   }
 
-})})
-  text_ans()
+
+  text_ans(correcAns)
 }
 
 var text_user_array = []
-var text_ans_array = []
+
 var totalmarkB = 9
 
-function text_ans(){  
+function text_ans(correcAns){  
 
   
   Try_again.classList.remove('show')
@@ -442,25 +583,17 @@ function text_ans(){
      // text_ans_array.push(parseInt(questions[0].SubQuestions[i].answer))
       
     }
-db.collection("questions")
-.where("qNo", "==", 2)
-.get()
-.then((querySnapshot) => {
-  querySnapshot.forEach((doc) => {
-    var text_ans_array1 = doc.data().answer;
-    text_ans_array = text_ans_array1;
+
+    let text_ans_array = correcAns;
     
   
-    })})
-   
-    console.log(text_ans_array)
 
     //  text_user_array = text_user_array.sort()
     //  text_ans_array = text_ans_array.sort()
      console.log("user ans - ",text_user_array);
      console.log("correct ans - ",text_ans_array);
  
-      if ((text_user_array.toString() == text_ans_array.toString()) == true) {
+      if ((text_user_array == text_ans_array) == true) {
         userScore += inc_marks ;
         console.log("Correct Answer");
         for(i=0;i< 3;i++){
@@ -469,7 +602,7 @@ db.collection("questions")
         }
         next_btn.classList.add("show");
         text_user_array = []
-        text_ans_array = []
+        
       }
       else if(attempt>3){
         for(i=0;i< 3;i++){
@@ -510,7 +643,7 @@ db.collection("questions")
 }
 
 //================================================================================================================
-function showQuestions_C(question,options) {
+function showQuestions_C(question,options,correcAns,type) {
 attempt = 1;
   next_btn.classList.remove("show");
   if (document.getElementById("queA") != null) {
@@ -520,7 +653,8 @@ attempt = 1;
     console.log(queA_section)  
   }
   
-  
+  console.log(type)
+
   // document.getElementById('que').innerHTML +=
   //           "<div class='queA_text'> </div>";
   // document.getElementById('que').innerHTML +=
@@ -541,6 +675,21 @@ attempt = 1;
   document.getElementById("queA_text1").innerHTML +=
     '<div class="option_list"><div class = "table" id = "Table">';
   var opt_id = 0;
+  if(type == 'txt'){
+    for (i = 0; i < 2; i++) {
+      document.getElementById("Table").innerHTML += '<div class = "row">';
+      for (j = 0; j < 2; j++) {
+        document.getElementById("Table").innerHTML +=
+          '<div class="option" id = "' +
+          opt_id +
+          '">' +
+          options[opt_id] +
+          '</div>';
+        opt_id++;
+      }
+      document.getElementById("Table").innerHTML += "</div>";
+  }}
+  else{
   for (i = 0; i < 2; i++) {
     document.getElementById("Table").innerHTML += '<div class = "row">';
     for (j = 0; j < 2; j++) {
@@ -554,6 +703,7 @@ attempt = 1;
     }
     document.getElementById("Table").innerHTML += "</div>";
   }
+}
   document.getElementById("queA").innerHTML += "</div></div>";
   // +'<div class = "row">'
   // +'<div class="option" id = "0"><span><img src = "' + questions_A[index].options[0]+'"></span></div>'
@@ -571,11 +721,11 @@ attempt = 1;
   
   // set onclick attribute to all available options
   for (i = 0; i < option.length; i++) {
-    option[i].setAttribute("onclick", "optionSelected_single(this)");
+    option[i].setAttribute("onclick", "optionSelected_single(this, ["+ correcAns+"])");
   }
 
 }
-function optionSelected_single(answer) {
+function optionSelected_single(answer,correcAns) {
  console.log('optionSelected ran')
   Try_again.classList.remove("show");
   var items = document.querySelectorAll(".option");
@@ -605,7 +755,6 @@ function optionSelected_single(answer) {
 let userAns = answer.id //getting user selected option
 //console.log(answer.id)
 console.log(userAns);
-let correcAns = questions_C[queC_count-1].answer; //getting correct answer from array
 console.log(correcAns);
 const allOptions = option_list.children.length; //getting all option items
 console.log(allOptions);
@@ -617,7 +766,7 @@ check.onclick = () => {
     check.classList.remove("show");
     //if user selected option is equal to array's correct answer
     next_btn.classList.add("show");
-    userScore += questions_C[queC_count-1].marks; //upgrading score value with 1
+    userScore += 1; //upgrading score value with 1
     
       var ans1_temp = document.getElementById(correcAns);
       ans1_temp.classList.add("correct");
